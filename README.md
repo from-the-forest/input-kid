@@ -11,7 +11,7 @@ Both InputKid and UIKid can be included independently. InputKid is currently in 
 
 The root folder contains a [project.godot](project.godot) file meant to be used with [Godot Engine](https://godotengine.org), the open source 2D and 3D game engine.
 
-I have provided a [demo.tscn](demo.tscn) to showcase InputKid's capabilities.
+I have provided a [demo.tscn](demo/demo.tscn) to showcase InputKid's capabilities.
 
 ## What's Inside?
 

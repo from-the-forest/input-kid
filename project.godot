@@ -11,9 +11,14 @@ config_version=5
 [application]
 
 config/name="InputKid"
-run/main_scene="res://demo.tscn"
+run/main_scene="res://demo/demo.tscn"
 config/features=PackedStringArray("4.2", "GL Compatibility")
 config/icon="res://icon.svg"
+
+[display]
+
+window/size/viewport_width=1000
+window/size/viewport_height=700
 
 [editor_plugins]
 

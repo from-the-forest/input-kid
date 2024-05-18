@@ -1,0 +1,120 @@
+[gd_scene load_steps=6 format=3 uid="uid://py63lw1ws5du"]
+
+[ext_resource type="Script" path="res://demo/auto_viewport_size/auto_viewport_size.gd" id="1_pgi65"]
+[ext_resource type="Script" path="res://addons/input_kid/text/filters/max_line_limit_filter.gd" id="2_wsfu0"]
+
+[sub_resource type="GDScript" id="GDScript_srs3w"]
+script/source = "extends Node2D
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	%Input.grab_focus()
+	
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	pass
+
+
+func _on_max_line_limit_filter_rejected(line_limit):
+	%DropBox.text = (\"%s\\n%s\" % [%DropBox.text, %Input.text]).lstrip(\"\\n \")
+	%Input.clear()
+	
+	(%DropBox as TextEdit).set_v_scroll(
+		%DropBox.get_scroll_pos_for_line(
+			%DropBox.get_line_count() - 1))
+
+
+func _on_max_line_limit_filter_applied():
+	(%DropBox as TextEdit).set_v_scroll(
+		%DropBox.get_scroll_pos_for_line(
+			%DropBox.get_line_count() - 1))
+"
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_05int"]
+bg_color = Color(0.449199, 0.578183, 0.581843, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_stdft"]
+bg_color = Color(0.23888, 0.290166, 0.294087, 1)
+
+[node name="Demo" type="Node2D"]
+script = SubResource("GDScript_srs3w")
+
+[node name="AutoViewportSize" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 1000.0
+offset_bottom = 700.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_pgi65")
+
+[node name="Panel" type="Panel" parent="AutoViewportSize"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_05int")
+
+[node name="MarginContainer" type="MarginContainer" parent="AutoViewportSize/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="TabContainer" type="TabContainer" parent="AutoViewportSize/Panel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/side_margin = 10
+theme_override_styles/panel = SubResource("StyleBoxFlat_stdft")
+
+[node name="Max Lines" type="MarginContainer" parent="AutoViewportSize/Panel/MarginContainer/TabContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VSplitContainer" type="VSplitContainer" parent="AutoViewportSize/Panel/MarginContainer/TabContainer/Max Lines"]
+layout_mode = 2
+
+[node name="Input" type="TextEdit" parent="AutoViewportSize/Panel/MarginContainer/TabContainer/Max Lines/VSplitContainer"]
+unique_name_in_owner = true
+clip_contents = true
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+theme_override_colors/background_color = Color(0, 0, 0, 1)
+scroll_fit_content_height = true
+caret_type = 1
+caret_blink = true
+caret_blink_interval = 0.44
+
+[node name="MaxLineLimitFilter" type="Node" parent="AutoViewportSize/Panel/MarginContainer/TabContainer/Max Lines/VSplitContainer/Input"]
+script = ExtResource("2_wsfu0")
+line_limit = 5
+affects = NodePath("..")
+
+[node name="DropBox" type="TextEdit" parent="AutoViewportSize/Panel/MarginContainer/TabContainer/Max Lines/VSplitContainer"]
+unique_name_in_owner = true
+clip_contents = true
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/background_color = Color(0, 0, 0, 1)
+editable = false
+context_menu_enabled = false
+shortcut_keys_enabled = false
+drag_and_drop_selection_enabled = false
+virtual_keyboard_enabled = false
+middle_mouse_paste_enabled = false
+scroll_smooth = true
+
+[connection signal="applied" from="AutoViewportSize/Panel/MarginContainer/TabContainer/Max Lines/VSplitContainer/Input/MaxLineLimitFilter" to="." method="_on_max_line_limit_filter_applied"]
+[connection signal="rejected" from="AutoViewportSize/Panel/MarginContainer/TabContainer/Max Lines/VSplitContainer/Input/MaxLineLimitFilter" to="." method="_on_max_line_limit_filter_rejected"]
